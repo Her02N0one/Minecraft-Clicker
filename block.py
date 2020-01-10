@@ -2,6 +2,24 @@ import pygame
 import random
 
 
+class Particle:
+    def __init__(self, startx, starty, image_path=None, color=None):
+        self.x = startx
+        self.y = starty
+        if color is None:
+            self.image = pygame.surface()
+        self.col = col
+        self.sx = startx
+        self.sy = starty
+        self.life = random.randint(30, 120)
+
+    def move(self):
+
+        self.y += 5
+
+        self.x += random.randint(-4, 4)
+
+
 class Block:
     def __init__(self, name, strength=10):
         self.name = name
@@ -38,8 +56,8 @@ class Block:
                 f"assets/masks/destroy_stage_{self.mask_stage}.png"
             ).convert_alpha()
             self.set_size(256, 256)
-        else:
-            self.create_particles()
+            if self.damage == self.strength:
+                self.create_particles()
 
     def update_events(self, dt, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -56,11 +74,11 @@ class Block:
             self.broken = True
 
         for particle in self.particles:
-            if particle[0].y <= self.rect.y + self.rect.height:
-                particle[0].y += 5
+            if particle.life >= 0:
+                if particle.y <= self.rect.y + self.rect.height:
+                    particle.move()
+                particle.life -= 1
             else:
-                particle[1] -= 1
-            if particle[1] <= 0:
                 self.particles.remove(particle)
 
     def render(self, screen):
@@ -70,21 +88,19 @@ class Block:
                 screen.blit(self.mask, self.rect)
         else:
             for particle in self.particles:
-                pygame.draw.rect(screen, (69, 69, 69), particle[0])
+                pygame.draw.rect(screen, particle.col,
+                                 ((particle.x, particle.y), (32, 32)))
 
     def create_particles(self):
         particle_template = pygame.Rect((0, 0), (32, 32))
-        for _ in range(25):
-            x = random.randint(self.rect.x,
-                                self.rect.width - particle_template.width)
-            y = random.randint(self.rect.y,
-                                self.rect.height - particle_template.height)
-            width = particle_template.width
-            height = particle_template.height
-            life = random.randint(20, 30)
 
-            rect = pygame.Rect((x, y), (width, height))
-            self.particles.append([rect, life])
+        for _ in range(100):
+            x = random.randint(self.rect.x,
+                               self.rect.width - particle_template.width)
+            y = random.randint(self.rect.y,
+                               self.rect.height - particle_template.height)
+
+            self.particles.append(Particle(x, y, (150, 75, 0)))
 
     def is_broken(self):
         return self.broken
