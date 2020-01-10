@@ -3,12 +3,23 @@ import random
 
 
 class Particle:
-    def __init__(self, startx, starty, image_path=None, color=None):
+    def __init__(self,
+                 startx,
+                 starty,
+                 width,
+                 height,
+                 image_path=None,
+                 color=None):
         self.x = startx
         self.y = starty
+
         if color is None:
-            self.image = pygame.surface()
-        self.col = col
+            self.image = pygame.image.load(image_path).convert()
+            self.image = pygame.transform.scale(self.image, (width, height))
+        else:
+            self.image = pygame.Surface((width, height))
+            self.image.fill(color)
+
         self.sx = startx
         self.sy = starty
         self.life = random.randint(30, 120)
@@ -88,8 +99,9 @@ class Block:
                 screen.blit(self.mask, self.rect)
         else:
             for particle in self.particles:
-                pygame.draw.rect(screen, particle.col,
-                                 ((particle.x, particle.y), (32, 32)))
+                screen.blit(particle.image, (particle.x, particle.y))
+                # pygame.draw.rect(screen, particle.col,
+                #                  ((particle.x, particle.y), (32, 32)))
 
     def create_particles(self):
         particle_template = pygame.Rect((0, 0), (32, 32))
@@ -100,7 +112,13 @@ class Block:
             y = random.randint(self.rect.y,
                                self.rect.height - particle_template.height)
 
-            self.particles.append(Particle(x, y, (150, 75, 0)))
+            self.particles.append(
+                Particle(
+                    x,
+                    y,
+                    particle_template.width,
+                    particle_template.height,
+                    image_path="assets/sprites/" + self.name + ".png"))
 
     def is_broken(self):
         return self.broken
