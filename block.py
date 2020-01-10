@@ -38,6 +38,8 @@ class Block:
                 f"assets/masks/destroy_stage_{self.mask_stage}.png"
             ).convert_alpha()
             self.set_size(256, 256)
+        else:
+            self.create_particles()
 
     def update_events(self, dt, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -52,11 +54,10 @@ class Block:
     def update(self, dt):
         if self.damage >= self.strength:
             self.broken = True
-            self.create_particles()
 
         for particle in self.particles:
             if particle[0].y <= self.rect.y + self.rect.height:
-                particle[0].y += 3
+                particle[0].y += 5
             else:
                 particle[1] -= 1
             if particle[1] <= 0:
@@ -73,19 +74,17 @@ class Block:
 
     def create_particles(self):
         particle_template = pygame.Rect((0, 0), (32, 32))
-        if not self.particles_created:
-            for _ in range(32):
-                x = random.randint(self.rect.x,
-                                   self.rect.width - particle_template.width)
-                y = random.randint(self.rect.y,
-                                   self.rect.height - particle_template.height)
-                width = particle_template.width
-                height = particle_template.height
-                life = random.randint(20, 30)
+        for _ in range(25):
+            x = random.randint(self.rect.x,
+                                self.rect.width - particle_template.width)
+            y = random.randint(self.rect.y,
+                                self.rect.height - particle_template.height)
+            width = particle_template.width
+            height = particle_template.height
+            life = random.randint(20, 30)
 
-                rect = pygame.Rect((x, y), (width, height))
-                self.particles.append([rect, life])
-        self.particles_created = True
+            rect = pygame.Rect((x, y), (width, height))
+            self.particles.append([rect, life])
 
     def is_broken(self):
         return self.broken
