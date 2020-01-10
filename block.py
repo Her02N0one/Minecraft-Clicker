@@ -22,7 +22,7 @@ class Particle:
 
         self.sx = startx
         self.sy = starty
-        self.life = random.randint(30, 120)
+        self.life = random.randint(30, 180)
 
     def move(self):
 
@@ -104,9 +104,9 @@ class Block:
                 #                  ((particle.x, particle.y), (32, 32)))
 
     def create_particles(self):
-        particle_template = pygame.Rect((0, 0), (32, 32))
+        particle_template = pygame.Rect((0, 0), (16, 16))
 
-        for _ in range(100):
+        for _ in range(250):
             x = random.randint(self.rect.x,
                                self.rect.width - particle_template.width)
             y = random.randint(self.rect.y,
@@ -118,7 +118,7 @@ class Block:
                     y,
                     particle_template.width,
                     particle_template.height,
-                    image_path="assets/sprites/" + self.name + ".png"))
+                    image_path="assets/sprites/" + self.name + "_particle.png"))
 
     def is_broken(self):
         return self.broken
