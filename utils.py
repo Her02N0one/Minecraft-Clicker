@@ -73,3 +73,30 @@ class State:
 
     def render(self, target=None):
         assert 0, "render not implemented"
+
+
+class Player:
+
+    def __init__(self):
+        self.inventory = list()
+        self.total_blocks_broken = 0
+        self.total_clicks = 0
+
+    def add_item(self, item):
+        for index, inv_item in enumerate(self.inventory):
+            if inv_item[0] == item:
+                self.inventory[index][1] += 1
+                return
+        self.inventory.append([item, 1])
+
+
+if __name__ == '__main__':
+    p = Player()
+
+    p.add_item("dirt")
+    p.add_item("dirt")
+    p.add_item("dirt")
+    p.add_item("pumpkin")
+    p.add_item("dirt")
+
+    print(p.inventory)

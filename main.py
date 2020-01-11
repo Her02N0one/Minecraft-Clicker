@@ -3,6 +3,8 @@ import constants
 import utils
 from states import GameState
 
+# TODO: add an animation module for pygame surfaces
+
 fullscreen = False
 
 if fullscreen:
@@ -43,7 +45,7 @@ while running:
 
     # Render
 
-    screen.fill((255, 255, 255))
+    screen.fill((69, 69, 69))
 
     if not states.isEmpty():
         states.top().render()
@@ -51,9 +53,8 @@ while running:
     fps = str(round(clock.get_fps(), 2))
 
     constants.small_font.render_to(screen, (
-        constants.WIDTH - 80,
-        constants.HEIGHT - 25),
-        fps, (0, 0, 0))
+        constants.WIDTH - 80, 5),
+                                   fps, (0, 0, 0))
 
     pygame.display.flip()
 
