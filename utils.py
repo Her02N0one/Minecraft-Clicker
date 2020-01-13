@@ -39,10 +39,6 @@ class State:
         self.screen = state_data["screen"]
         self.states = state_data["states"]
 
-        self.all_sprites = constants.all_sprites
-        self.entities = constants.entities
-        self.tiles = constants.tiles
-
         self.mousePos = pygame.Vector2()
         self.quit = False
         self.target = None

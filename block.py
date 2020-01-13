@@ -41,7 +41,7 @@ class Particle:
 
 
 class Block:
-    def __init__(self, name, product=None, strength=10):
+    def __init__(self, name, strength=1, product=None):
         self.name = name
         if product is None:
             self.product = self.name

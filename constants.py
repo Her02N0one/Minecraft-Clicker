@@ -6,9 +6,8 @@ from pygame import freetype
 
 pygame.font.init()
 pygame.freetype.init()
-# removed because of repl.it
-# pygame.mixer.pre_init(44100, -16, 1, 512)
-# pygame.mixer.init()
+pygame.mixer.pre_init(44100, -16, 1, 512)
+pygame.mixer.init()
 
 # Colors
 BLUE = (0, 0, 255)
@@ -34,19 +33,8 @@ with open("config/graphics.ini", "r") as f:
     WIDTH, HEIGHT = tuple(map(int, lines[1].split()))
     FPS = int(lines[2])
 
-# Tile size
-TILE_SIZE = 32
-
-GRID_WIDTH = WIDTH / TILE_SIZE
-GRID_HEIGHT = HEIGHT / TILE_SIZE
-
-GRAVITY = 5
-
-all_sprites = pygame.sprite.Group()
-entities = pygame.sprite.Group()
-tiles = pygame.sprite.Group()
-
 # Different text sizes for in menus
+minecraft_font = pygame.freetype.Font("assets/fonts/Minecraft.ttf", 25)
 small_font = pygame.freetype.SysFont(pygame.font.get_default_font(), 25)
 medium_font = pygame.freetype.SysFont(pygame.font.get_default_font(), 50)
 large_font = pygame.freetype.SysFont(pygame.font.get_default_font(), 80)

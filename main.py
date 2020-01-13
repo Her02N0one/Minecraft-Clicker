@@ -22,7 +22,6 @@ states = utils.StateStack()  # Stack that holds all the States
 state_data = dict(screen=screen, states=states)
 states.push(GameState(state_data))
 
-
 # ====== Main Game Loop ======
 
 while running:
@@ -52,9 +51,7 @@ while running:
 
     fps = str(round(clock.get_fps(), 2))
 
-    constants.small_font.render_to(screen, (
-        constants.WIDTH - 80, 5),
-                                   fps, (0, 0, 0))
+    constants.small_font.render_to(screen, (constants.WIDTH - 80, 5), fps, (0, 0, 0))
 
     pygame.display.flip()
 
