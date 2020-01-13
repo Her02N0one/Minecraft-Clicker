@@ -4,10 +4,11 @@ Global constants
 import pygame
 from pygame import freetype
 
+
 pygame.font.init()
 pygame.freetype.init()
-pygame.mixer.pre_init(44100, -16, 1, 512)
-pygame.mixer.init()
+# pygame.mixer.pre_init(44100, -16, 1, 512)
+# pygame.mixer.init()
 
 # Colors
 BLUE = (0, 0, 255)
@@ -32,6 +33,14 @@ with open("config/graphics.ini", "r") as f:
     TITLE = lines[0]
     WIDTH, HEIGHT = tuple(map(int, lines[1].split()))
     FPS = int(lines[2])
+
+fullscreen = False
+
+if fullscreen:
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+else:
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption(TITLE)
 
 # Different text sizes for in menus
 minecraft_font = pygame.freetype.Font("assets/fonts/Minecraft.ttf", 25)

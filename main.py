@@ -1,17 +1,11 @@
 import pygame
-import constants
+from constants import *
 import utils
 from states import GameState
 
 # TODO: add an animation module for pygame surfaces
 
-fullscreen = False
 
-if fullscreen:
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-else:
-    screen = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
-    pygame.display.set_caption(constants.TITLE)
 
 running = True if pygame.display.get_surface() is not None else False
 
@@ -25,7 +19,7 @@ states.push(GameState(state_data))
 # ====== Main Game Loop ======
 
 while running:
-    clock.tick(constants.FPS)
+    clock.tick(FPS)
     dt = clock.get_time() / 1000
 
     # Update
@@ -51,7 +45,7 @@ while running:
 
     fps = str(round(clock.get_fps(), 2))
 
-    constants.small_font.render_to(screen, (constants.WIDTH - 80, 5), fps, (0, 0, 0))
+    small_font.render_to(screen, (WIDTH - 80, 5), fps, (0, 0, 0))
 
     pygame.display.flip()
 

@@ -5,6 +5,7 @@ import random
 from constants import *
 import gui
 import utils
+import biomes
 from block import Block
 
 player = utils.Player()
@@ -15,35 +16,12 @@ class GameState(utils.State):
     def __init__(self, state_data):
         super().__init__(state_data)
 
-        self.debug = dict()
-        directory = 'assets/sprites/'
-
-        for filename in os.listdir(directory):
-            if filename.endswith(".png"):
-                name = filename[:-4]
-                self.debug[name] = dict(name=name, strength=1)
-
-        self.plain = {
-            "grass": dict(name="grass", strength=5, product="dirt", ),
-            "dirt": dict(name="dirt", strength=6),
-            "pumpkin": dict(name="pumpkin", strength=7),
-            "stone": dict(name="stone", strength=10, product="cobblestone")
-
-        }
-
-        self.cave = {
-            "dirt": dict(name="dirt", strength=6),
-            "stone": dict(name="stone", strength=10, product="cobblestone"),
-            "iron": dict(name="iron_ore", strength=15),
-            "obsidian": dict(name="obsidian", strength=35)
-        }
-
         self.buttons = dict()
 
         self.buttons["INVENTORY"] = gui.Button(x=0, y=HEIGHT - 60, text="Inventory",
                                                callback=(lambda: self.states.push(InventoryState(state_data))))
 
-        self.current_biome = self.debug
+        self.current_biome = biomes.debug
 
         self.blocks = list()
         self.blocks.append(Block("dirt", 1))
@@ -60,11 +38,7 @@ class GameState(utils.State):
         if self.blocks[-1].is_broken():
             self.delay -= 55 * dt
             if self.delay <= 0:
-                block = list(self.current_biome.values())[random.randint(0, len(self.current_biome.values()) - 1)]
-                if "product" not in block:
-                    self.blocks.append(Block(name=block["name"], strength=block["strength"]))
-                else:
-                    self.blocks.append(Block(name=block["name"], strength=block["strength"], product=block["product"]))
+                self.blocks.append(biomes.get_random_block(self.current_biome))      
 
                 self.delay = 20
                 player.total_blocks_broken += 1
