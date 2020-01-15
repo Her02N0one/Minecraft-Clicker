@@ -7,6 +7,13 @@ def get_random_block(biome: dict) -> Block:
     return list(biome.values())[random.randint(0, len(biome.values())) - 1]
 
 
+def reset_blocks(biome: dict, *args):
+    for key in biome:
+        for block in args:
+            if biome[key] != block:
+                biome[key].reset()
+
+
 debug = dict()
 directory = 'assets/sprites/'
 for filename in os.listdir(directory):

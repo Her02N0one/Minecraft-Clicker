@@ -1,9 +1,9 @@
 import pygame
 import random
 
-CUBE_WIDTH = CUBE_HEIGHT = 256
-CUBE_X = 250
-CUBE_Y = 125 - 64
+BLOCK_WIDTH = BLOCK_HEIGHT = 256
+BLOCK_X = 250
+BLOCK_Y = 125 - 64
 
 
 class Particle:
@@ -19,12 +19,15 @@ class Particle:
         self.width = width
         self.height = height
 
-        if color is None:
+        if color is None and image_path is not None:
             self.image = pygame.image.load(image_path).convert()
-            self.image = pygame.transform.scale(self.image, (CUBE_WIDTH, CUBE_HEIGHT))
-        else:
+            self.image = pygame.transform.scale(self.image, (BLOCK_WIDTH, BLOCK_HEIGHT))
+        elif image_path is None and color is not None:
             self.image = pygame.Surface((width, height))
             self.image.fill(color)
+        else:
+            raise TypeError(
+                "you must put either an image_path or a color. You can't have both and you can't have neither")
 
         self.sx = startx
         self.sy = starty
@@ -32,7 +35,7 @@ class Particle:
         self.offset_x = random.randint(0, self.width)
         self.offset_y = random.randint(0, self.height)
 
-    def move(self):
+    def update(self):
         self.y += 7
         self.x += random.randint(-2, 2)
 
@@ -43,21 +46,21 @@ class Particle:
 class Block:
     def __init__(self, name, strength=1, product=None):
         self.name = name
+        self.strength = strength
+
         if product is None:
             self.product = self.name
         else:
             self.product = product
-
-        self.strength = strength
 
         self.image = pygame.image.load("assets/sprites/" + name +
                                        ".png").convert()
         self.mask = pygame.Surface((self.image.get_width(),
                                     self.image.get_height()))
         self.rect = self.image.get_rect()
-        self.rect.x = CUBE_X
-        self.rect.y = CUBE_Y
-        self.set_size(CUBE_WIDTH, CUBE_HEIGHT)
+        self.rect.x = BLOCK_X
+        self.rect.y = BLOCK_Y
+        self.set_size(BLOCK_WIDTH, BLOCK_HEIGHT)
 
         self.damage = 0
         self.mask_stage = -1
@@ -66,7 +69,6 @@ class Block:
         self.button_down = False
         self.broken = False
 
-        self.particles_created = False
         self.particles = list()
 
     def set_size(self, width, height):
@@ -79,10 +81,8 @@ class Block:
         self.damage += 1 * self.hit_strength
         if not self.broken:
             self.mask_stage = int((self.damage / self.strength) * 9)
-            self.mask = pygame.image.load(
-                f"assets/masks/destroy_stage_{self.mask_stage}.png"
-            ).convert_alpha()
-            self.set_size(256, 256)
+            self.mask = pygame.image.load(f"assets/masks/destroy_stage_{self.mask_stage}.png").convert_alpha()
+            self.set_size(BLOCK_WIDTH, BLOCK_HEIGHT)
             if self.damage == self.strength:
                 self.create_particles()
 
@@ -100,14 +100,15 @@ class Block:
         if self.damage >= self.strength:
             self.broken = True
 
-        for particle in self.particles:
-            if particle.life >= 0:
-                if particle.y <= self.rect.y + self.rect.height - particle.height:
-                    particle.move()
+        if len(self.particles) != 0:
+            for particle in self.particles:
+                if particle.life >= 0:
+                    if particle.y <= self.rect.y + self.rect.height - particle.height:
+                        particle.update()
+                    else:
+                        particle.life -= 1
                 else:
-                    particle.life -= 1
-            else:
-                self.particles.remove(particle)
+                    self.particles.remove(particle)
 
     def render(self, target):
         if not self.is_broken():
@@ -115,10 +116,9 @@ class Block:
             if self.mask_stage >= 0:
                 target.blit(self.mask, self.rect)
         else:
-            for particle in self.particles:
-                particle.render(target)
-                # pygame.draw.rect(screen, particle.col,
-                #                  ((particle.x, particle.y), (32, 32)))
+            if len(self.particles) != 0:
+                for particle in self.particles:
+                    particle.render(target)
 
     def create_particles(self):
 
@@ -138,8 +138,13 @@ class Block:
                     height,
                     image_path="assets/sprites/" + self.name + ".png"))
 
+    def reset(self):
+        self.damage = 0
+        self.mask_stage = -1
+        self.broken = False
+
     def is_broken(self):
         return self.broken
 
     def copy(self):
-        return Block(self.name, self.strength)
+        return Block(self.name, self.strength, self.product)

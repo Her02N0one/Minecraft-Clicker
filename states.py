@@ -38,7 +38,8 @@ class GameState(utils.State):
         if self.blocks[-1].is_broken():
             self.delay -= 55 * dt
             if self.delay <= 0:
-                self.blocks.append(biomes.get_random_block(self.current_biome))      
+                biomes.reset_blocks(self.current_biome, self.blocks[-1])
+                self.blocks.append(biomes.get_random_block(self.current_biome))
 
                 self.delay = 20
                 player.total_blocks_broken += 1
@@ -97,7 +98,7 @@ class InventoryState(utils.State):
         row = 0
         col = 0
 
-        for index, item in enumerate(player.inventory):
+        for item in player.inventory:
 
             if row >= 8:
                 row = 0
@@ -105,19 +106,14 @@ class InventoryState(utils.State):
             target.blit(self.sprites[item[0]], ((row * self.sprite_size) + (row * self.padding) + self.inventory_x,
                                                 self.inventory_y + (col * self.sprite_size) + (col * self.padding)))
 
-            minecraft_font.render_to(target, ((row * self.sprite_size) + (row * self.padding) + self.inventory_x + (
-                    self.sprite_size - minecraft_font.get_rect(str(item[1])).width),
-                                              self.inventory_y + (col * self.sprite_size) + (col * self.padding) + (
-                                                          self.sprite_size - minecraft_font.get_rect(
-                                                      str(item[1])).height)), str(item[1]), (255, 255, 255))
+            minecraft_font.render_to(target,
+                                     (
+                                         row * self.padding + row * self.sprite_size + self.sprite_size - minecraft_font.get_rect(
+                                             str(item[1])).width + self.inventory_x,
+                                         col * self.padding + col * self.sprite_size - minecraft_font.get_rect(((
+                                             str(item[1])))).height + self.sprite_size + self.inventory_y),
+                                     str(item[1]), (255, 255, 255))
             row += 1
 
-            # for x in range(128, WIDTH, tile_size):
-            #     pygame.draw.line(target, GREY, (x, 128), (x, tile_size*2+128))
-            # for y in range(128, HEIGHT, tile_size):
-            #     pygame.draw.line(target, GREY, (128, y), (tile_size*10+128, y))
-
-        for button in self.buttons.values():
-            button.render(target)
-
-            # small_font.render_to(target, (50, 100), str(player.inventory))
+            for button in self.buttons.values():
+                button.render(target)

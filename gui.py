@@ -16,11 +16,14 @@ class Button:
                  idle_color=(100, 100, 100),
                  hover_color=(150, 150, 150),
                  active_color=(120, 120, 120),
+                 hover_sound=pygame.mixer.Sound("assets/sounds/sfx/tap-resonant.aif"),
+                 active_sound=pygame.mixer.Sound("assets/sounds/sfx/tap-warm.aif"),
                  callback=(lambda: None)
                  ):
 
         self.shape = pygame.Rect((x, y, width, height))
         self.colors = {"IDLE": idle_color, "HOVER": hover_color, "ACTIVE": active_color}
+        self.sounds = {"BTN_HOVER": hover_sound, "BTN_ACTIVE": active_sound}
         self.text = text
         self.font = font
         self.textPos = ((self.shape.x + (self.shape.width / 2) - font.get_rect(text).width / 2),
@@ -43,6 +46,7 @@ class Button:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.shape.collidepoint(*event.pos):
                 self.current_color = self.colors["ACTIVE"]
+                self.sounds["BTN_ACTIVE"].play()
                 self.button_down = True
 
         elif event.type == pygame.MOUSEBUTTONUP:
@@ -55,6 +59,7 @@ class Button:
         elif event.type == pygame.MOUSEMOTION:
             collided = self.shape.collidepoint(*event.pos)
             if collided and self.button_idle:
+                self.sounds["BTN_HOVER"].play()
                 self.button_idle = False
             elif collided and not self.button_down:
                 self.current_color = self.colors["HOVER"]
