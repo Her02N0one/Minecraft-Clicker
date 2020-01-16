@@ -44,17 +44,31 @@ class Particle:
 
 
 class Block:
-    def __init__(self, name, strength=1, product=None):
+    def __init__(self, name, strength: int = 1, product=None, product_image=None):
+        """
+        :param name: the name block, must also be the same as the name of the block in the blocks folder
+        :param strength: how many clicks it takes to break the block
+        :param product: the name of what the block gives you without silktouch
+        :param product_image: if the product isn't a block, specify the file location of the image here
+        """
         self.name = name
         self.strength = strength
+        self.product = product
+        self.product_image = product_image
+        self.image_location = "assets/sprites/blocks/" + name + ".png"
 
         if product is None:
             self.product = self.name
+            self.product_image = self.image_location
         else:
             self.product = product
 
-        self.image = pygame.image.load("assets/sprites/" + name +
-                                       ".png").convert()
+            if product_image is None:
+                self.product_image = self.image_location
+            else:
+                self.product_image = product_image
+
+        self.image = pygame.image.load(self.image_location).convert()
         self.mask = pygame.Surface((self.image.get_width(),
                                     self.image.get_height()))
         self.rect = self.image.get_rect()
@@ -136,7 +150,7 @@ class Block:
                     y,
                     width,
                     height,
-                    image_path="assets/sprites/" + self.name + ".png"))
+                    image_path="assets/sprites/blocks/" + self.name + ".png"))
 
     def reset(self):
         self.damage = 0

@@ -15,7 +15,7 @@ def reset_blocks(biome: dict, *args):
 
 
 debug = dict()
-directory = 'assets/sprites/'
+directory = 'assets/sprites/blocks/'
 for filename in os.listdir(directory):
     if filename.endswith(".png"):
         name = filename[:-4]
@@ -34,7 +34,7 @@ plain = {
 cave_level_1 = {
     "dirt": Block("dirt", 6),
     "stone": Block("stone", 10, product="cobblestone"),
-    "coal": Block("coal_ore", 12, product="coal"),
+    "coal": Block("coal_ore", 12, product="coal", product_image="assets/sprites/items/coal.png"),
     "iron": Block("iron_ore", 15),
     "obsidian": Block("obsidian", 35)
 }

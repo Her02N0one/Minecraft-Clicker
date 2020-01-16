@@ -21,7 +21,7 @@ class GameState(utils.State):
         self.buttons["INVENTORY"] = gui.Button(x=0, y=HEIGHT - 60, text="Inventory",
                                                callback=(lambda: self.states.push(InventoryState(state_data))))
 
-        self.current_biome = biomes.debug
+        self.current_biome = biomes.cave_level_1
 
         self.blocks = list()
         self.blocks.append(Block("dirt", 1))
@@ -43,7 +43,7 @@ class GameState(utils.State):
 
                 self.delay = 20
                 player.total_blocks_broken += 1
-                player.add_item(self.blocks[-2].product)
+                player.add_item({"name": self.blocks[-2].product, "image": self.blocks[-2].product_image})
         if len(self.blocks) != 1:
             self.blocks[-2].update(dt)
         if len(self.blocks) > 2:
@@ -79,9 +79,9 @@ class InventoryState(utils.State):
 
     def on_enter(self):
         for item in player.inventory:
-            sprite = pygame.image.load("assets/sprites/" + item[0] + ".png").convert()
+            sprite = pygame.image.load(item[0]["image"]).convert_alpha()
             sprite = pygame.transform.scale(sprite, (self.sprite_size, self.sprite_size))
-            self.sprites[item[0]] = sprite
+            self.sprites[item[0]["name"]] = sprite
 
     def update_events(self, dt, event):
         for button in self.buttons.values():
@@ -103,8 +103,9 @@ class InventoryState(utils.State):
             if row >= 8:
                 row = 0
                 col += 1
-            target.blit(self.sprites[item[0]], ((row * self.sprite_size) + (row * self.padding) + self.inventory_x,
-                                                self.inventory_y + (col * self.sprite_size) + (col * self.padding)))
+            target.blit(self.sprites[item[0]["name"]],
+                        ((row * self.sprite_size) + (row * self.padding) + self.inventory_x,
+                         self.inventory_y + (col * self.sprite_size) + (col * self.padding)))
 
             minecraft_font.render_to(target,
                                      (
@@ -112,8 +113,9 @@ class InventoryState(utils.State):
                                              str(item[1])).width + self.inventory_x,
                                          col * self.padding + col * self.sprite_size - minecraft_font.get_rect(((
                                              str(item[1])))).height + self.sprite_size + self.inventory_y),
-                                     str(item[1]), (255, 255, 255))
+                                     str(item[1]), (255, 255, 255)
+                                     )
             row += 1
 
-            for button in self.buttons.values():
-                button.render(target)
+        for button in self.buttons.values():
+            button.render(target)
