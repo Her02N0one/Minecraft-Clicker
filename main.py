@@ -6,7 +6,6 @@ from states import GameState
 # TODO: add an animation module for pygame surfaces
 
 
-
 running = True if pygame.display.get_surface() is not None else False
 
 # set up clock for limiting framerate and getting dt

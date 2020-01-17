@@ -6,8 +6,8 @@ from pygame import freetype
 
 pygame.font.init()
 pygame.freetype.init()
-pygame.mixer.pre_init(44100, -16, 1, 512)
-pygame.mixer.init()
+# pygame.mixer.pre_init(44100, -16, 1, 512)
+# pygame.mixer.init()
 
 # Colors
 BLUE = (0, 0, 255)

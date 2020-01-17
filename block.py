@@ -101,7 +101,7 @@ class Block:
                 self.create_particles()
 
     def update_events(self, dt, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(*event.pos):
                 self.button_down = True
         elif event.type == pygame.MOUSEBUTTONUP:
